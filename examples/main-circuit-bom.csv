@@ -1,0 +1,11 @@
+Value,Description,Designator,Footprint,Quantity
+GBU808 800V 8A,AC input bridge rectifier,BR1,GBU,1
+MOV,AC input surge suppressor,RV1,D14,1
+NTC,Inrush limiter,RT1,D15,1
+IRFP460 500V MOSFET,Half bridge switch,Q1 Q2,TO-247,2
+2.2uF 630V,DC blocking film capacitor,C1,Film,1
+10mH,High voltage output inductor,L1,Axial,1
+250M,High voltage divider upper resistor,RH1 RH2,Radial,2
+10M 2W 10kV,High voltage bleeder resistor,RB1,Axial,1
+TBD,Main transformer,T1,Custom,1
+Terminal 15A 300V,AC input connector,J1,Terminal,1

@@ -1,0 +1,81 @@
+{
+  "name": "Example main-circuit BOM review rules",
+  "fieldAliases": {
+    "part": ["Value", "Part Number", "MPN"],
+    "description": ["Description", "Function"],
+    "designator": ["Designator", "RefDes"],
+    "quantity": ["Quantity", "Qty"]
+  },
+  "rules": [
+    {
+      "id": "missing-designator",
+      "severity": "error",
+      "failWhen": { "fieldMissing": "designator" },
+      "message": "The BOM row has no reference designator.",
+      "recommendation": "Add schematic references such as R1, C1, Q1, or T1."
+    },
+    {
+      "id": "generic-placeholder-part",
+      "severity": "warning",
+      "failWhen": {
+        "fieldMatches": {
+          "field": "part",
+          "pattern": "^(?:tbd|n/?a|mov|ntc|ptc|tvs|diode|mosfet|capacitor|cap|resistor|res|inductor|transformer|connector)$",
+          "flags": "i"
+        }
+      },
+      "message": "The part field looks like a generic placeholder.",
+      "recommendation": "Replace placeholders with a real value, rating, package, or manufacturer part number."
+    },
+    {
+      "id": "hv-rating-required",
+      "severity": "error",
+      "when": { "hasTag": "high_voltage" },
+      "unless": {
+        "textMatches": {
+          "pattern": "\\b\\d+(?:\\.\\d+)?\\s*(?:kv|vdc|vac|v)\\b",
+          "flags": "i"
+        }
+      },
+      "message": "High-voltage related parts must show a voltage rating.",
+      "recommendation": "Add rated voltage, insulation rating, creepage requirement, or an exact manufacturer part number."
+    },
+    {
+      "id": "power-resistor-wattage-required",
+      "severity": "warning",
+      "when": {
+        "all": [
+          { "hasTag": "resistor" },
+          {
+            "any": [
+              { "hasTag": "power" },
+              { "hasTag": "high_voltage" },
+              { "textMatches": { "pattern": "\\b(?:sense|bleeder|divider|shunt|snubber|inrush|output)\\b", "flags": "i" } }
+            ]
+          }
+        ]
+      },
+      "unless": {
+        "textMatches": {
+          "pattern": "\\b\\d+(?:\\.\\d+)?\\s*w\\b",
+          "flags": "i"
+        }
+      },
+      "message": "Power or high-voltage resistor rows should include wattage.",
+      "recommendation": "Add continuous power, pulse power if relevant, and derating assumptions."
+    },
+    {
+      "id": "transformer-spec-required",
+      "severity": "warning",
+      "when": { "hasTag": "transformer" },
+      "unless": {
+        "textMatches": {
+          "pattern": "\\b(?:turns|ratio|core|primary|secondary|isolation|insulation|va|\\d+\\s*w)\\b",
+          "flags": "i"
+        }
+      },
+      "message": "Transformer rows need a controlled custom specification.",
+      "recommendation": "Add core type, material, turns ratio, insulation target, frequency range, and vendor drawing reference."
+    }
+  ]
+}
